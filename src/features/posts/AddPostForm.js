@@ -19,9 +19,7 @@ const AddPostForm = () => {
 
   const onSavePostClicked = () => {
     if (title && content) {
-      dispatch(
-        postAdded(title, content, userId)
-      );
+      dispatch(postAdded(title, content, userId));
       setTitle("");
       setContent("");
     }
@@ -29,11 +27,11 @@ const AddPostForm = () => {
 
   const canSave = Boolean(title) && Boolean(content) && Boolean(userId);
 
-  const usersOptions = users.map(user => (
+  const usersOptions = users.map((user) => (
     <option key={user.id} value={user.id}>
       {user.name}
     </option>
-  ))
+  ));
 
   return (
     <section>
@@ -48,7 +46,12 @@ const AddPostForm = () => {
           onChange={onTitleChanged}
         />
         <label htmlFor="postAuthor">Author:</label>
-        <select name="" id="postAuthor" value={userId} onChange={onAuthorChanged}>
+        <select
+          name=""
+          id="postAuthor"
+          value={userId}
+          onChange={onAuthorChanged}
+        >
           <option value=""></option>
           {usersOptions}
         </select>
@@ -59,7 +62,7 @@ const AddPostForm = () => {
           value={content}
           onChange={onContentChanged}
         />
-        <button type="button" onClick={onSavePostClicked} disabled={!canSave} >
+        <button type="button" onClick={onSavePostClicked} disabled={!canSave}>
           Save Post
         </button>
       </form>
