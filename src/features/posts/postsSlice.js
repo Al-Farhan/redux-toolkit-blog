@@ -103,9 +103,9 @@ const postsSlice = createSlice({
           heart: 0,
           rocket: 0,
           coffee: 0,
-        }
+        };
         console.log(action.payload);
-        state.posts.push(action.payload)
+        state.posts.push(action.payload);
       });
   },
 });
@@ -115,8 +115,8 @@ export const getPostsStatus = (state) => state.posts.status;
 export const getPostsError = (state) => state.posts.error;
 
 export const selectPostById = (state, postId) => {
-  state.posts.posts.find(post => post.id === postId);
-}
+  return state.posts.posts.find((post) => post.id === postId);
+};
 
 export const { postAdded, reactionAdded } = postsSlice.actions;
 
