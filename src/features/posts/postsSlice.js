@@ -23,7 +23,7 @@ export const addNewPost = createAsyncThunk(
   "posts/addNewPost",
   async (initialPost) => {
     try {
-      const response = await axios.get(POSTS_URL, initialPost);
+      const response = await axios.post(POSTS_URL, initialPost);
       return response.data;
     } catch (err) {
       return err.message;
@@ -100,7 +100,7 @@ const postsSlice = createSlice({
         const loadedPosts = action.payload.map((post) => {
           post.date = sub(new Date(), { minutes: min++ }).toISOString();
           post.reactions = {
-            thumbsUp: 0,
+            thumbsup: 0,
             wow: 0,
             heart: 0,
             rocket: 0,
@@ -120,7 +120,7 @@ const postsSlice = createSlice({
         action.payload.userId = Number(action.payload.userId);
         action.payload.data = new Date().toISOString();
         action.payload.reactions = {
-          thumbsUp: 0,
+          thumbsup: 0,
           wow: 0,
           heart: 0,
           rocket: 0,
