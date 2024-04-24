@@ -11,7 +11,7 @@ const PostsList = () => {
     isSuccess,
     isError,
     error
-  } = useGetPostsQuery;
+  } = useGetPostsQuery();
 
   // const posts = useSelector(selectAllPosts);
   const orderedPostIds = useSelector(selectPostIds);
@@ -19,7 +19,7 @@ const PostsList = () => {
 
   let content;
   if (isLoading) {
-    content = <p>"Loading"</p>;
+    content = <p>Loading...</p>;
   } else if (isSuccess) {
     // const orderedPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
     // content = orderedPosts.map(post => <PostsExcerpt key={post.id} post={post} />)

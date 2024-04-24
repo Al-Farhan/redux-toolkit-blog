@@ -3,7 +3,7 @@ import {
   createEntityAdapter,
 } from "@reduxjs/toolkit";
 import { sub } from "date-fns";
-import apiSlice from '../api/apiSlice';
+import {apiSlice} from '../api/apiSlice';
 
 // --> Previous code
 // const POSTS_URL = "https://jsonplaceholder.typicode.com/posts";
@@ -74,7 +74,7 @@ const postsAdapter = createEntityAdapter({
 
 const initialState = postsAdapter.getInitialState();
 
-export const extendedApiSlice = apiSlice.injectEndPoints({
+export const extendedApiSlice = apiSlice.injectEndpoints({
   endpoints: builder => ({
     getPosts: builder.query({
       query: () => '/posts',
@@ -94,7 +94,7 @@ export const extendedApiSlice = apiSlice.injectEndPoints({
         return postsAdapter.setAll(initialState, loadedPosts);
       },
       providesTags: (result, error, arg) => [
-        { type: 'Post', id: "List"},
+        { type: 'Post', id: "LIST"},
         ...result.ids.map(id => ({ type: 'Post', id }))
       ]
     }),
@@ -165,6 +165,29 @@ export const extendedApiSlice = apiSlice.injectEndPoints({
       invalidatesTags: (result, error, arg) => [
         { type: 'Post', id: arg.id}
       ]
+    }),
+    addReaction: builder.mutation({
+      query: ({ postId, reactions }) => ({
+        url: `posts/${postId}`,
+        method: 'PATCH',
+        // In a real app, we'd probably need to base this on user ID somehow so that a user can't do the same reaction more than once
+        body: { reactions }
+      }),
+      async onQueryStarted({ postId, reactions }, { dispatch, queryFulfilled }) {
+        // `updateQueryData` requires the endpoint name and cache key arguments, so it know which piece of cache state to update
+        const patchResult = dispatch(
+          extendedApiSlice.util.updateQueryData('getPosts', undefined, draft => {
+            // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            const post = draft.entities[postId]
+            if (post) post.reactions = reactions
+          })
+        )
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+        }
+      }
     })
   })
 });
@@ -174,7 +197,8 @@ export const {
   useGetPostsByUserIdQuery,
   useAddNewPostMutation,
   useUpdatePostMutation,
-  useDeletePostMutation
+  useDeletePostMutation,
+  useAddReactionMutation
 } = extendedApiSlice;
 
 // returns the query result object
